@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import styles from './TransactionsTable.module.scss'
 import { getAccounts, getCategories, getTransactions } from '@/mock_srv'
 import { JGrid, JGridProps } from '../JGrid/JGrid'
-import { formatDate } from '@/app/util/formatDate'
+import { createDate, formatDate } from '@/app/util/formatDate'
 
 export function TransactionsTable() {
 	interface DataState {
@@ -24,9 +24,13 @@ export function TransactionsTable() {
 		})
 	}, [])
 
+	const [pendingChanges, setPendingChanges] = useState<Transaction[]>()
+
 	if (data === undefined) {
 		return <div>Loading...</div>
 	}
+	console.log(pendingChanges)
+
 	// beyond this point, data has been loaded
 
 	const columnTitles = ['Date', 'ID', 'Name', 'Category', 'Account', 'Amount']
@@ -35,14 +39,52 @@ export function TransactionsTable() {
 	const columnHeaderElems = columnTitles.map((title) => (
 		<div className={styles.header}>{title}</div>
 	))
-	// yyyy-mm-dd
+
 	const transactionsElems = data.transactions.map((transaction) => {
-		const formattedDate = formatDate(transaction.date)
+		function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+			const changedKey = e.target.dataset['key'] as keyof Transaction
+			let newVal: string | number | Date = e.target.value
+
+			if (
+				changedKey === 'account_id' ||
+				changedKey === 'category_id' ||
+				changedKey === 'amount'
+			) {
+				newVal = parseInt(newVal)
+			} else if (changedKey === 'date') {
+				newVal = createDate(newVal)
+			}
+
+			if (pendingChanges === undefined) {
+				setPendingChanges([{ ...transaction, [changedKey]: newVal }])
+			} else {
+				setPendingChanges((prev) => {
+					const changes = [...prev!]
+					const thisAlreadyInPendingChanges = prev!.some((changedTransaction, index) => {
+						if (changedTransaction.transaction_id === transaction.transaction_id) {
+							changes[index] = { ...changes[index], [changedKey]: newVal }
+							return true
+						}
+						return false
+					})
+					if (!thisAlreadyInPendingChanges) {
+						changes.push({ ...transaction, [changedKey]: newVal })
+					}
+					return changes
+				})
+			}
+			if (newVal != transaction[changedKey]) {
+				e.target.classList.add(styles.pending_change)
+			} else {
+				e.target.classList.remove(styles.pending_change)
+			}
+		}
 
 		const categoryDropdown = (
 			<select
 				data-key='category_id'
 				defaultValue={transaction.category_id === null ? '' : transaction.category_id}
+				onChange={handleInputChange}
 			>
 				<option value='' />
 				{data!.categories.map((category) => {
@@ -55,6 +97,7 @@ export function TransactionsTable() {
 			<select
 				data-key='account_id'
 				defaultValue={transaction.account_id === null ? '' : transaction.account_id}
+				onChange={handleInputChange}
 			>
 				<option value='' />
 				{data!.accounts.map((account) => {
@@ -64,12 +107,27 @@ export function TransactionsTable() {
 		)
 
 		return [
-			<input data-key='date' type='date' defaultValue={formattedDate} />,
+			<input
+				data-key='date'
+				type='date'
+				defaultValue={formatDate(transaction.date)}
+				onChange={handleInputChange}
+			/>,
 			<div data-key='transaction_id'>{transaction.transaction_id}</div>,
-			<input data-key='name' type='text' defaultValue={transaction.name} />,
+			<input
+				data-key='name'
+				type='text'
+				defaultValue={transaction.name}
+				onChange={handleInputChange}
+			/>,
 			categoryDropdown,
 			accountDropdown,
-			<input data-key='amount' type='number' defaultValue={transaction.amount} />,
+			<input
+				data-key='amount'
+				type='number'
+				defaultValue={transaction.amount}
+				onChange={handleInputChange}
+			/>,
 		]
 	})
 
