@@ -4,7 +4,7 @@ interface Transaction {
 	category_id: number | null
 	account_id: number | null
 	amount: number
-	date: Date
+	date: string
 }
 
 interface Category {

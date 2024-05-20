@@ -18,7 +18,7 @@ const transactions: Transaction[] = [
 		category_id: 1,
 		account_id: 2,
 		amount: 13.99,
-		date: new Date(2024, 4, 18),
+		date: '2024-05-18',
 	},
 	{
 		transaction_id: 2,
@@ -26,7 +26,7 @@ const transactions: Transaction[] = [
 		category_id: 2,
 		account_id: 2,
 		amount: 42.35,
-		date: new Date(2024, 4, 18),
+		date: '2024-05-18',
 	},
 	{
 		transaction_id: 3,
@@ -34,7 +34,7 @@ const transactions: Transaction[] = [
 		category_id: 3,
 		account_id: 1,
 		amount: 100.0,
-		date: new Date(2024, 4, 18),
+		date: '2024-05-18',
 	},
 	{
 		transaction_id: 4,
@@ -42,7 +42,7 @@ const transactions: Transaction[] = [
 		category_id: 1,
 		account_id: 2,
 		amount: 75.22,
-		date: new Date(2024, 4, 19),
+		date: '2024-05-19',
 	},
 	{
 		transaction_id: 5,
@@ -50,7 +50,7 @@ const transactions: Transaction[] = [
 		category_id: 1,
 		account_id: 2,
 		amount: 11.99,
-		date: new Date(2024, 4, 19),
+		date: '2024-05-19',
 	},
 	{
 		transaction_id: 6,
@@ -58,7 +58,7 @@ const transactions: Transaction[] = [
 		category_id: null,
 		account_id: 1,
 		amount: -300,
-		date: new Date(2024, 4, 20),
+		date: '2024-05-20',
 	},
 	{
 		transaction_id: 7,
@@ -66,7 +66,7 @@ const transactions: Transaction[] = [
 		category_id: null,
 		account_id: 2,
 		amount: 300,
-		date: new Date(2024, 4, 20),
+		date: '2024-05-20',
 	},
 ]
 

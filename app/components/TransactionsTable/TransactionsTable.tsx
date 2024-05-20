@@ -43,7 +43,7 @@ export function TransactionsTable() {
 	const transactionsElems = data.transactions.map((transaction) => {
 		function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
 			const changedKey = e.target.dataset['key'] as keyof Transaction
-			let newVal: string | number | Date = e.target.value
+			let newVal: string | number = e.target.value
 
 			if (
 				changedKey === 'account_id' ||
@@ -51,8 +51,6 @@ export function TransactionsTable() {
 				changedKey === 'amount'
 			) {
 				newVal = parseInt(newVal)
-			} else if (changedKey === 'date') {
-				newVal = createDate(newVal)
 			}
 
 			if (pendingChanges === undefined) {
@@ -110,7 +108,7 @@ export function TransactionsTable() {
 			<input
 				data-key='date'
 				type='date'
-				defaultValue={formatDate(transaction.date)}
+				defaultValue={transaction.date}
 				onChange={handleInputChange}
 			/>,
 			<div data-key='transaction_id'>{transaction.transaction_id}</div>,
