@@ -5,6 +5,7 @@ import { getAccounts, getCategories, getTransactions } from '@/mock_srv'
 import { JGrid, JGridProps } from '../JGrid/JGrid'
 import { createDate, formatDate } from '@/app/util/formatDate'
 import { areObjectsEqual } from '@/app/util/areObjectsEqual'
+import { InputDollar } from '../custom_inputs/custom_inputs'
 
 export function TransactionsTable() {
 	interface DataState {
@@ -51,7 +52,7 @@ export function TransactionsTable() {
 				changedKey === 'category_id' ||
 				changedKey === 'amount'
 			) {
-				newVal = parseInt(newVal)
+				newVal = parseFloat(newVal)
 			}
 
 			if (pendingChanges.length === 0) {
@@ -84,6 +85,13 @@ export function TransactionsTable() {
 					return changes
 				})
 			}
+			console.log(
+				`old: ${transaction[changedKey]} ${typeof transaction[
+					changedKey
+				]} new: ${newVal} ${typeof newVal} literal: ${e.target.value} parsed: ${parseFloat(
+					e.target.value
+				)}`
+			)
 			if (newVal != transaction[changedKey]) {
 				e.target.classList.add(styles.pending_change)
 			} else {
@@ -134,7 +142,7 @@ export function TransactionsTable() {
 			/>,
 			categoryDropdown,
 			accountDropdown,
-			<input
+			<InputDollar
 				data-key='amount'
 				type='number'
 				defaultValue={transaction.amount}
