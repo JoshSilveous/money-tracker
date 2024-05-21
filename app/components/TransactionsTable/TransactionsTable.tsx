@@ -4,6 +4,7 @@ import styles from './TransactionsTable.module.scss'
 import { getAccounts, getCategories, getTransactions } from '@/mock_srv'
 import { JGrid, JGridProps } from '../JGrid/JGrid'
 import { createDate, formatDate } from '@/app/util/formatDate'
+import { areObjectsEqual } from '@/app/util/areObjectsEqual'
 
 export function TransactionsTable() {
 	interface DataState {
@@ -24,7 +25,7 @@ export function TransactionsTable() {
 		})
 	}, [])
 
-	const [pendingChanges, setPendingChanges] = useState<Transaction[]>()
+	const [pendingChanges, setPendingChanges] = useState<Transaction[]>([])
 
 	if (data === undefined) {
 		return <div>Loading...</div>
@@ -53,13 +54,25 @@ export function TransactionsTable() {
 				newVal = parseInt(newVal)
 			}
 
-			if (pendingChanges === undefined) {
+			if (pendingChanges.length === 0) {
 				setPendingChanges([{ ...transaction, [changedKey]: newVal }])
 			} else {
 				setPendingChanges((prev) => {
 					const changes = [...prev!]
 					const thisAlreadyInPendingChanges = prev!.some((changedTransaction, index) => {
 						if (changedTransaction.transaction_id === transaction.transaction_id) {
+							// check if this change undos all changes made to this transaction, and remove from pendingChanges if so
+							if (newVal === transaction[changedKey]) {
+								const changesHaveBeenReverted = areObjectsEqual(
+									{ ...changes[index], [changedKey]: newVal },
+									transaction
+								)
+								if (changesHaveBeenReverted) {
+									changes.splice(index, 1)
+									return true
+								}
+							}
+
 							changes[index] = { ...changes[index], [changedKey]: newVal }
 							return true
 						}
@@ -116,6 +129,7 @@ export function TransactionsTable() {
 				data-key='name'
 				type='text'
 				defaultValue={transaction.name}
+				className={styles.name}
 				onChange={handleInputChange}
 			/>,
 			categoryDropdown,
@@ -137,7 +151,7 @@ export function TransactionsTable() {
 
 	return (
 		<div>
-			<JGrid {...jGridConfig} />
+			<JGrid className={styles.transaction_table} {...jGridConfig} />
 		</div>
 	)
 }
