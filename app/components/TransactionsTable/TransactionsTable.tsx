@@ -5,7 +5,7 @@ import { getAccounts, getCategories, getTransactions } from '@/mock_srv'
 import { JGrid, JGridProps } from '../JGrid/JGrid'
 import { createDate, formatDate } from '@/app/util/formatDate'
 import { areObjectsEqual } from '@/app/util/areObjectsEqual'
-import { InputDollar } from '../custom_inputs/custom_inputs'
+import { InputDollar } from '../custom_inputs'
 
 export function TransactionsTable() {
 	interface DataState {

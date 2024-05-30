@@ -1,0 +1,27 @@
+.container {
+	max-width: 100%;
+	--right-width: 30px;
+	display: flex;
+	input.left_of_decimal {
+		width: calc(100% - var(--right-width));
+		text-align: right;
+		padding-right: 2px;
+	}
+	.decimal {
+		transform: translateY(2px);
+	}
+	input.right_of_decimal {
+		padding-left: 2px;
+		width: var(--right-width);
+	}
+
+	input[type='number']::-webkit-outer-spin-button,
+	input[type='number']::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	input[type='number'] {
+		-moz-appearance: textfield;
+	}
+}
